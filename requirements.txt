@@ -3,4 +3,4 @@ numpy
 panda
 fastapi
 uvicorn
-gunicorng
+gunicorn
