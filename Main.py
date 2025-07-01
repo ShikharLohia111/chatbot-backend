@@ -1,9 +1,21 @@
 import streamlit as st
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import math
 
 app =FastAPI()
 
+origins = [
+    "http://localhost:3000",  # Local React app
+    "https://chatbot-woad-alpha.vercel.app",  # Your production frontend domain
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # List of allowed domains
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
 items=[{"id":1,"name":"shikhar"},{"id":2,"name":"kiran"}]
 
 @app.get("/items")
