@@ -2,14 +2,23 @@ import streamlit as st
 from fastapi import FastAPI,Request
 import openai
 from langchain.chains.question_answering.map_rerank_prompt import output_parser
-from langchain_community.llms import Ollama
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_openai import ChatOpenAI
+from langchain_ollama import OllamaLLM
 from fastapi.middleware.cors import CORSMiddleware
 import math
+import json
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 app =FastAPI()
+
+os.environ["LANGCHAIN_API_KEY"]="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"
+os.environ["LANGCHAIN_TRACING_V2"]="true"
+os.environ["LANGCHAIN_PROJECT"]="Simple Q&A Chatbot With Ollama"
 
 origins = [
     "http://localhost:3000",  # Local React app
@@ -32,11 +41,11 @@ prompt=ChatPromptTemplate.from_messages(
     ]
 )
 
-temperature=st.sidebar.slider("Temperature",min_value=0.0,max_value=1.0,value=0.7)
-max_tokens = st.sidebar.slider("Max Tokens", min_value=50, max_value=300, value=150)
+temperature=0.7
+max_tokens = 150
 
 def get_response(question,llm,temp,max_token):
-    newmodel=Ollama(model=llm)
+    newmodel=OllamaLLM(model="llama3.1")
     output_parser=StrOutputParser()
     chain=prompt|newmodel|output_parser
     result=chain.invoke({"question":question})
@@ -47,7 +56,11 @@ def get_items():
     return items
 
 @app.post("/item/")
-def add_item(request:Request):
-    body=request.json()
+async def add_item(request:Request):
+    body=await request.json()
     answer=get_response(body,"mistral",temperature,max_tokens)
     return answer
+
+q=input("ask question")
+ans=get_response(q,"mistral",temperature,max_tokens)
+print(ans)

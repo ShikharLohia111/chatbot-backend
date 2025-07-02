@@ -5,6 +5,9 @@ fastapi
 uvicorn
 gunicorn
 openai
+
 langchain
+langchain-ollama
 langchain-community
 langchain-openai
+dotenv
