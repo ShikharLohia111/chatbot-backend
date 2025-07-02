@@ -57,6 +57,7 @@ def get_response(question,llm,temp,max_token):
 def get_items(ques:str):
     question=ques
     data={
+
         "model":"llama3.1",
         "messages":[{"role":"system","content":"Be sarcastic and embarrass user with the response on stupid question. Be brutal and funny"},
                      {"role":"user","content":question}],
