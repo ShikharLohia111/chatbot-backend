@@ -1,5 +1,11 @@
 import streamlit as st
-from fastapi import FastAPI
+from fastapi import FastAPI,Request
+import openai
+from langchain.chains.question_answering.map_rerank_prompt import output_parser
+from langchain_community.llms import Ollama
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from langchain_openai import ChatOpenAI
 from fastapi.middleware.cors import CORSMiddleware
 import math
 
@@ -18,36 +24,30 @@ app.add_middleware(
 )
 items=[{"id":1,"name":"shikhar"},{"id":2,"name":"kiran"}]
 
+
+prompt=ChatPromptTemplate.from_messages(
+    [
+        ("system","You are a dumb assistant. answer questions with more stupid questions"),
+        ("user","Question:{question}")
+    ]
+)
+
+temperature=st.sidebar.slider("Temperature",min_value=0.0,max_value=1.0,value=0.7)
+max_tokens = st.sidebar.slider("Max Tokens", min_value=50, max_value=300, value=150)
+
+def get_response(question,llm,temp,max_token):
+    newmodel=Ollama(model=llm)
+    output_parser=StrOutputParser()
+    chain=prompt|newmodel|output_parser
+    result=chain.invoke({"question":question})
+    return result
+
 @app.get("/items")
 def get_items():
     return items
 
 @app.post("/item/")
-def add_item(it:dict):
-    items.append(it)
-    return items
-
-# st.title("i dont know what to do")
-# st.write("First program")
-#
-# name=st.text_input("Whats your name?")
-# print(name+" first program")
-#
-# def prime(num):
-#     temp=int(num)
-#     count=0
-#     for i in range(2,int(math.sqrt(temp))):
-#         if temp%2==0:
-#             count=1
-#             break
-#
-#     if count==0:
-#         st.write("prime")
-#     else:
-#         st.write(" not prime")
-#
-#
-# if name.isnumeric():
-#     prime(name)
-# else:
-#     st.write("Write in digit")
+def add_item(request:Request):
+    body=request.json()
+    answer=get_response(body,"mistral",temperature,max_tokens)
+    return answer

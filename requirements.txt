@@ -4,3 +4,7 @@ panda
 fastapi
 uvicorn
 gunicorn
+openai
+langchain
+langchain-community
+langchain-openai
