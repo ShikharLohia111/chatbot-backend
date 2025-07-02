@@ -8,7 +8,9 @@ from langchain_openai import ChatOpenAI
 from langchain_ollama import OllamaLLM
 from fastapi.middleware.cors import CORSMiddleware
 import math
+from fastapi.responses import JSONResponse
 import json
+import requests
 
 import os
 from dotenv import load_dotenv
@@ -53,13 +55,29 @@ def get_response(question,llm,temp,max_token):
 
 @app.get("/items")
 def get_items(ques:str):
-    body = ques
-    answer = get_response(body, "llama3.1", temperature, max_tokens)
-    return answer
+    question=ques
+    data={
+        "model":"llama3.1",
+        "messages":[{"role":"system","content":"Be sarcastic and embarrass user with the response on stupid question. Be brutal and funny"},
+                     {"role":"user","content":question}],
+        "stream":False
+    }
+    url="http://localhost:11434/api/chat"
+    response=requests.post(url,json=data)
+    response=json.loads(response.text)
+    response=response["message"]["content"]
+    return response
 
 @app.post("/item/")
 async def add_item(request:Request):
     body=await request.json()
     answer=get_response(body,"llama3.1",temperature,max_tokens)
     return answer
+
+@app.options("/item/")
+async def handle_options():
+    return JSONResponse(
+        content={"message": "OK"},
+        headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST, GET, OPTIONS"}
+    )
 
