@@ -61,6 +61,3 @@ async def add_item(request:Request):
     answer=get_response(body,"mistral",temperature,max_tokens)
     return answer
 
-q=input("ask question")
-ans=get_response(q,"mistral",temperature,max_tokens)
-print(ans)
