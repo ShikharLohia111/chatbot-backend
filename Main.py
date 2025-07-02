@@ -52,12 +52,14 @@ def get_response(question,llm,temp,max_token):
     return result
 
 @app.get("/items")
-def get_items():
-    return items
+def get_items(ques:str):
+    body = ques
+    answer = get_response(body, "llama3.1", temperature, max_tokens)
+    return answer
 
 @app.post("/item/")
 async def add_item(request:Request):
     body=await request.json()
-    answer=get_response(body,"mistral",temperature,max_tokens)
+    answer=get_response(body,"llama3.1",temperature,max_tokens)
     return answer
 
