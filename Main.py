@@ -1,3 +1,4 @@
+import ollama
 import streamlit as st
 from fastapi import FastAPI,Request
 import openai
@@ -17,6 +18,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app =FastAPI()
+
 
 os.environ["LANGCHAIN_API_KEY"]="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"
 os.environ["LANGCHAIN_TRACING_V2"]="true"
@@ -82,3 +84,4 @@ async def handle_options():
         headers={"Access-Control-Allow-Origin": "*", "Access-Control-Allow-Methods": "POST, GET, OPTIONS"}
     )
 
+# print(get_items("are you human?"))

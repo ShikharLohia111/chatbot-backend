@@ -5,9 +5,11 @@ fastapi
 uvicorn
 gunicorn
 openai
-
+psycopg2
 langchain
 langchain-ollama
 langchain-community
 langchain-openai
 dotenv
+pandas
+openpyxl
