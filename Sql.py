@@ -133,10 +133,10 @@ def get_data_from_postgresql(ques:str):
     try:
         # Set up the connection to PostgreSQL
         conn = psycopg2.connect(
-            host="localhost",  # Replace with your PostgreSQL host
-            dbname="postgres",  # Replace with your database name
-            user="postgres",  # Replace with your database username
-            password="zxcasdqwE@1"  # Replace with your password
+            host="dpg-d1jc5gali9vc739mqv2g-a.oregon-postgres.render.com",  # Replace with your PostgreSQL host
+            dbname="postgres_om5o",  # Replace with your database name
+            user="postgres_om5o_user",  # Replace with your database username
+            password="AQMZRYCLMYNFq4wx8pQv5DkyThTqBscX"  # Replace with your password
         )
 
         # Define the query to fetch your table
